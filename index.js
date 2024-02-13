@@ -40,7 +40,7 @@ app.post('/register', async (req, res) => {
         const newUser = await User.create({
             username,
             password: hashedPassword,
-            role: 'admin'
+            role: 'user'
         });
 
         res.status(201).json({message: "Пользователь успешно зарегистрирован", user: newUser});
@@ -74,7 +74,7 @@ app.post('/login', async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.json({ token });
+        res.json({ token, role: user.role });
     } catch (error) {
         res.status(500).send('Ошибка при входе в систему.');
     }
