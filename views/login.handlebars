@@ -9,6 +9,7 @@
         <input type="password" id="password" name="password" required>
     </div>
     <button type="submit">Войти</button>
+    <div id="message" style="display: none; color: red; margin-bottom: 10px;"></div>
 </form>
 <a href="/blogs">Вернуться на главную</a>
 <script>
@@ -44,6 +45,9 @@
                 })
                 .catch((error) => {
                     console.error('Ошибка:', error);
+                    const messageElement = document.getElementById('message');
+                    messageElement.textContent = 'Неверный логин или пароль';
+                    messageElement.style.display = 'block';
                 });
     });
 

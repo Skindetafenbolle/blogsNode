@@ -9,6 +9,8 @@
         <input type="password" id="password" name="password" required>
     </div>
     <button type="submit">Регистрация</button>
+    <div id="error-message" style="display: none; color: red; margin-bottom: 10px;"></div>
+    <div id="success-message" style="display: none; color: green; margin-bottom: 10px;"></div>
 </form>
 <a href="/blogs">Вернуться на главную</a>
 <script>
@@ -29,19 +31,32 @@
             })
         })
                 .then(response => {
-                    if(response.ok) {
-                        window.location.href = '/login';
+                    if (response.ok) {
+                        const successMessageElement = document.getElementById('success-message');
+                        successMessageElement.textContent = 'Регистрация прошла успешно. Вы будете перенаправлены на страницу входа.';
+                        successMessageElement.style.display = 'block';
+
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        }, 2000);
                     } else {
                         console.error('Ошибка регистрации');
-                        return response.json();
+                        setTimeout(() => {
+                            window.location.href = '/register';
+                        }, 2000);
+                        return response.text().then(text => {
+                            const errorMessageElement = document.getElementById('error-message');
+                            try {
+                                const data = JSON.parse(text);
+                                errorMessageElement.textContent = data.error || 'Произошла ошибка при регистрации. Попробуйте снова.';
+                            } catch {
+                                errorMessageElement.textContent = text;
+                            }
+                            errorMessageElement.style.display = 'block';
+                        });
                     }
                 })
-                .then(data => {
-                    if(data && data.error) {
-                        alert(data.error);
-                    }
-                })
-                .catch((error) => {
+                .catch(error => {
                     console.error('Ошибка:', error);
                 });
     });

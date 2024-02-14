@@ -115,14 +115,18 @@ app.post('/createBlog', authenticateJWT, async (req, res) => {
     }
 });
 
+
+
 app.get('/blogs', async (req, res) => {
     try {
-        const blogs = await Blog.findAll();
-        const plainBlogs = blogs.map(blog => blog.get({ plain: true }));
+        const blogs = await Blog.findAll({
+            order: [['createdAt', 'DESC']]
+        });
+        const plainBlogs = blogs.map(blog => blog.get({ plain: true })); // Преобразование каждого экземпляра
         res.render('blogs', { blogs: plainBlogs });
     } catch (error) {
         console.error('Error fetching blogs:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).send('Internal Server Error');
     }
 });
 
